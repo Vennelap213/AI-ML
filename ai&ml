@@ -1,0 +1,99 @@
+#Plottting Heat map to check Correlation
+Corr=burnoutDF.corr()
+sns.sest(rc={'figure.figsize':(14,12)})
+fif=px.imshow(Corr,text_auto=True,aspect="auto")
+fig.show()
+
+#Count plot distribution of "Gender"
+plt.figure(figsize=(10,8))
+sns.countplot(x="Gender",data=burnoutDF,palette="magma")
+plt.title("Plot Distributon of Gender")
+plt.show()
+
+#Countplot distribution of "Company Type"
+plt.figure(figsize=(10,8))
+sns.countplot(x="Company Type",data=burnoutDF,palette="Spectral")
+plt.title("Plot distribution of Company Type")
+plt.show()
+
+#Count plot distribution of "WHF Setup Available"
+plt.figure(figsize=(10,8))
+sns.countplot(x="WHF Setup Available",data=burnoutDF,palette="dark:salmon_r")
+plt.title("Pot distribution of WHF Setup Available")
+plt.show()
+
+#Count-Plot Distribution of attributes with the help of Histogram
+burn_st=burnoutDF.loc[:,'Date of Joining':'Burn Rate']
+burn_st=burn_st.slect_dtypes([int,float])
+for i,col in emunerate(burn_st.columns):
+     fig=px.histogrram(burn_st,x=col,title="Plot Distribution of "+col,color_discrete_seqence=['i'])
+fig.update_layout(bargrp=0.2)
+fig.show()
+
+#Count=lot Distribution of attributes with the help of Histogram
+burn_st=burnoutDF.loc[:'Date of Joining':'Burn Rate']
+burn_st=burn_st.select_dtypes([int,float])
+for i,col in enumerate(burn_st.columns):
+fig=px.histogram(burn_st,x=col,title='Plot Distribution of "+col,color_discrete_seqence=['i'])
+fig.update_layout(bargap=0.2)
+fig.show()
+
+#Plot Dtstibution of Burn rate on the basis of Designation
+fig=px.line(burnoutDF,color="Designation",title="Burn rate on the basis of Designation")
+fig.update_layyout(bargap=0.1)
+fig.show()
+
+#Plot istribution of Burn rate on the basis of Gender
+fig=px.line(burnoutDF,y="Burn Rate",color="Gender",title="Burn Rate on the basis of Gender")
+fig.update_layout(bargap=0.2)
+fig.show()
+
+#Plot Distribution of "Designation vs mental fatigue as per company type,Burn rate and Gender"
+sns.replot(
+    data=burnoutDF, x=Designation",y="Mental Fatigue Score",col="Company Type",
+    hue="Company Type",size="Burn Rate",style="Gender",
+    palatte=["g","r"],sizes=(50,200)
+)
+
+#@title Implementing PCA
+#principle component analysis
+from sklearn.decomposition import PCA
+pca=PCA(0.95)
+x_pca=pca.fit_transform(x)
+print("PCA shape of x:",x_pca.shape,"and original shape is:",x.shape)
+print("% of importance of selected features is:",pca.explained_variance_ratio_)
+print("The number of features selected through PCA is:",pca.n_components_)
+
+#@title Data Splitting
+#Data Splitting in train and test
+from sklearn.model_selection import train_test-split
+x_train_pca,x_test,Y_train,Y_test=train_test_split(x_pca,y,test_size=0.25,random_state=10)
+
+#print the shape of splitted data
+print(x_train_pca.shape,x_test.shape,Y_train.shape,Y_test.shape)
+
+from sklearn.metrics import r2_score
+#Random Foest regressor
+from sklearn.ensemble import RandomForestRegressor
+rf_model=RandomForsetRegressor()
+rf_model.fit(x_train_pca,Y_train)
+train_pred_rf=rf_model.predict(x_train_pca)
+train_r2=r2_score(Y_train,train_pred_rf)
+train_pred_rf=_model.predict(x_test)
+test_r2=r2_score(Y_test,test_pred_rf)
+#Accuracy score
+print("Accuracy score of train data:"+str(round(100*train_r2,4))+"%")
+print("Accuracy score of test data:"+str(round(100*test*r2,4))+"%")
+
+#@title AdaBoost Regressor
+#AdaBoost regressor
+from sklearn.ensemble import AdaBoostRegressor
+adr_model=AdaBoostRegressor()
+adr_model.fit(x_train_pca,Y_train)
+train_pred_adboost=adr_model.predict(x_train_pca)
+train_r2=r2_score(Y_train,train_pred_adboost)
+train_pred_adboost=adr_model.predict(x_test)
+test_r2=r2_score(Y_test,test_pred_adaboost)
+#Accuracy score
+print("Accuracy score of train data:"+str(round(100*train_r2,4))+"%")
+print("Accuracy score of test data:"+str(round(100*test*r2,4))+"%")
